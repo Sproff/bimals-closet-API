@@ -53,13 +53,16 @@ const loginUser = async (req, res, next) => {
       expiresIn: '2h',
     });
 
-    user.token = token;
-    user.save();
+    // user.token = token;
+    // user.save();
 
     res.status(200).json({
       status: 'success',
       message: 'Login successful',
-      data: {user},
+      data: {
+        user,
+        token
+      },
     });
   } catch (error) {
     next(new ErrorHandler(error.statusCode || 500, error.message));
