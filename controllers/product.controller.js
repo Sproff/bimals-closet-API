@@ -34,6 +34,8 @@ const getParticularProduct = async (req, res, next) => {
     const {slug} = req.params;
     const product = await Product.findOne({slug});
 
+    if (!product) throw new ErrorHandler(404, 'Product does not exist')
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -50,6 +52,10 @@ const createProduct = async (req, res, next) => {
   try {
     const data = req.body;
     data.slug = slugify(data.name, {lower: true});
+    const findProduct = await Product.findOne({slug: data.slug});
+
+    if (findProduct) throw new ErrorHandler(400, 'Product already exit!')
+
     const product = await Product.create(data);
 
     res.status(200).json({
@@ -68,10 +74,12 @@ const updateProduct = async (req, res, next) => {
   try {
     const {slug} = req.params;
     const data = req.body;
-
+    
     const product = await Product.findOneAndUpdate({slug}, data, {
       new: true,
     });
+
+    if (!product) throw new ErrorHandler(404, 'Product does not exist')
 
     res.status(200).json({
       status: 'success',
@@ -90,10 +98,7 @@ const deleteProduct = async (req, res, next) => {
     const {slug} = req.params;
     const product = await Product.findOneAndDelete({slug});
 
-    if (!product) {
-      res.status(404).json({status: 'error', message: 'Product not found'});
-      return;
-    }
+    if (!product) throw new ErrorHandler(404, 'Product does not exist')
 
     res.status(201).json({
       status: 'success',

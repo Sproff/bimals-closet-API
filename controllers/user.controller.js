@@ -12,10 +12,10 @@ const createUser = async (req, res, next) => {
     if (error) throw new ErrorHandler(400, error.message);
 
     // Verify if email exist
+    data.email = data.email.toLowerCase();
+
     let user = await User.findOne({email: data.email});
     if (user) throw new ErrorHandler(400, 'Email already exists');
-
-    data.email = data.email.toLowerCase();
 
     const salt = await bcrypt.genSalt(8);
     data.password = await bcrypt.hash(data.password, salt);
