@@ -1,5 +1,6 @@
 const Product = require('../models/product.model');
 const slugify = require('slugify');
+const { ErrorHandler } = require('../utils/errorHandler')
 
 // Welcome
 const welcomePage = (req, res, next) => {
