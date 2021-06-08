@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express')
 const {
   welcomePage,
   getAllProductsList,
@@ -6,19 +6,21 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../controllers/product.controller');
+  searchProduct,
+} = require('../controllers/product.controller')
 
-const router = express.Router();
+const router = express.Router()
 
-router.route('/').get(welcomePage);
+router.route('/').get(welcomePage)
 
-router.route('/products').get(getAllProductsList)
-router.route('/product').post(createProduct);
+router.route('/products').get(getAllProductsList).post(createProduct)
+
+router.get('/products/search', searchProduct)
 
 router
   .route('/product/:slug')
   .get(getParticularProduct)
   .patch(updateProduct)
-  .delete(deleteProduct);
+  .delete(deleteProduct)
 
-module.exports = router;
+module.exports = router
