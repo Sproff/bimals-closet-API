@@ -6,14 +6,16 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  searchProduct,
 } = require('../controllers/product.controller');
 
 const router = express.Router();
 
 router.route('/').get(welcomePage);
 
-router.route('/products').get(getAllProductsList)
-router.route('/product').post(createProduct);
+router.route('/products').get(getAllProductsList).post(createProduct);
+
+router.get('/products/search', searchProduct);
 
 router
   .route('/product/:slug')
