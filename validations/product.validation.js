@@ -1,4 +1,4 @@
-const Joi = require('joi')
+const Joi = require("joi");
 
 // Validate product
 const productSchema = Joi.object({
@@ -9,6 +9,6 @@ const productSchema = Joi.object({
     url: Joi.string().required(),
   }),
   price: Joi.number().required(),
-})
+});
 
-module.exports = { productSchema }
+module.exports = { productSchema };
