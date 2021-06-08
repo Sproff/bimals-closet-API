@@ -1,12 +1,12 @@
-const Product = require("../models/product.model");
-const slugify = require("slugify");
-const { ErrorHandler } = require("../utils/errorHandler");
+const Product = require('../models/product.model');
+const slugify = require('slugify');
+const { ErrorHandler } = require('../utils/errorHandler');
 
 // Welcome
 const welcomePage = (req, res, next) => {
   try {
     res.send(
-      "Hey buddy! Feel free to create stuffs with this API. Try /products to get all products."
+      'Hey buddy! Feel free to create stuffs with this API. Try /products to get all products.'
     );
   } catch (error) {
     next(error);
@@ -19,7 +19,7 @@ const getAllProductsList = async (req, res, next) => {
     const products = await Product.find();
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         products,
       },
@@ -35,10 +35,10 @@ const getParticularProduct = async (req, res, next) => {
     const { slug } = req.params;
     const product = await Product.findOne({ slug });
 
-    if (!product) throw new ErrorHandler(404, "Product does not exist");
+    if (!product) throw new ErrorHandler(404, 'Product does not exist');
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         product,
       },
@@ -55,12 +55,12 @@ const createProduct = async (req, res, next) => {
     data.slug = slugify(data.name, { lower: true });
     const findProduct = await Product.findOne({ slug: data.slug });
 
-    if (findProduct) throw new ErrorHandler(400, "Product already exit!");
+    if (findProduct) throw new ErrorHandler(400, 'Product already exit!');
 
     const product = await Product.create(data);
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         product,
       },
@@ -80,10 +80,10 @@ const updateProduct = async (req, res, next) => {
       new: true,
     });
 
-    if (!product) throw new ErrorHandler(404, "Product does not exist");
+    if (!product) throw new ErrorHandler(404, 'Product does not exist');
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       data: {
         product,
       },
@@ -99,11 +99,11 @@ const deleteProduct = async (req, res, next) => {
     const { slug } = req.params;
     const product = await Product.findOneAndDelete({ slug });
 
-    if (!product) throw new ErrorHandler(404, "Product does not exist");
+    if (!product) throw new ErrorHandler(404, 'Product does not exist');
 
     res.status(201).json({
-      status: "success",
-      message: "Product has been deleted successfully",
+      status: 'success',
+      message: 'Product has been deleted successfully',
     });
   } catch (error) {
     next(error);
@@ -113,13 +113,13 @@ const deleteProduct = async (req, res, next) => {
 const searchProduct = async (req, res, next) => {
   try {
     const { q } = req.query;
-    const products = await Product.find({ name: { $regex: q, $options: "i" } });
+    const products = await Product.find({ name: { $regex: q, $options: 'i' } });
 
-    if (products.length < 1) throw new ErrorHandler(404, "No Product found");
+    if (products.length < 1) throw new ErrorHandler(404, 'No Product found');
 
     res.status(201).json({
-      status: "success",
-      message: "Product has been found successfully",
+      status: 'success',
+      message: 'Product has been found successfully',
       products,
     });
   } catch (error) {
