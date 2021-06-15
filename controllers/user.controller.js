@@ -1,20 +1,23 @@
 const User = require('../models/user.model');
-const {registerUserSchema, loginUserSchema} = require('../validations/user.validation');
+const {
+  registerUserSchema,
+  loginUserSchema,
+} = require('../validations/user.validation');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const {ErrorHandler} = require('../utils/errorHandler');
+const { ErrorHandler } = require('../utils/errorHandler');
 
 const createUser = async (req, res, next) => {
   try {
     // Validate data
     const data = req.body;
-    const {error} = await registerUserSchema.validateAsync(data);
+    const { error } = await registerUserSchema.validateAsync(data);
     if (error) throw new ErrorHandler(400, error.message);
 
     // Verify if email exist
     data.email = data.email.toLowerCase();
 
-    let user = await User.findOne({email: data.email});
+    let user = await User.findOne({ email: data.email });
     if (user) throw new ErrorHandler(400, 'Email already exists');
 
     const salt = await bcrypt.genSalt(8);
@@ -36,11 +39,11 @@ const loginUser = async (req, res, next) => {
   try {
     // Validate data
     const data = req.body;
-    const {error} = await loginUserSchema.validateAsync(data);
+    const { error } = await loginUserSchema.validateAsync(data);
     if (error) throw new ErrorHandler(400, error.message);
 
     // Verify email and password
-    const user = await User.findOne({email: data.email.toLowerCase()});
+    const user = await User.findOne({ email: data.email.toLowerCase() });
 
     if (!user)
       throw new ErrorHandler(400, 'User not found, proceed to the signup page');
@@ -49,7 +52,7 @@ const loginUser = async (req, res, next) => {
     if (!validatePassword) throw new ErrorHandler(400, 'Incorrect password');
 
     // Generate token for access
-    const token = jwt.sign({sub: user._id}, process.env.JWT_TOKEN, {
+    const token = jwt.sign({ sub: user._id }, process.env.JWT_TOKEN, {
       expiresIn: '2h',
     });
 
@@ -61,7 +64,7 @@ const loginUser = async (req, res, next) => {
       message: 'Login successful',
       data: {
         user,
-        token
+        token,
       },
     });
   } catch (error) {
@@ -69,4 +72,4 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = {createUser, loginUser};
+module.exports = { createUser, loginUser };
