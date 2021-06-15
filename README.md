@@ -16,7 +16,7 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 
 ## Documentation
 
-## Feel free to create stuffs with this API.
+### Feel free to create stuffs with this API.
 
 ### Get Request
 
