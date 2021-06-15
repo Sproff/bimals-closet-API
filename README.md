@@ -18,7 +18,7 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 
 ## Feel free to create stuffs with this API.
 
-## GET REQUEST
+### GET REQUEST
 
 -- welcome page - '/'
 
@@ -26,7 +26,7 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 
 -- get a particular product - '/product/:slug'
 
-# POST REQUEST
+### POST REQUEST
 
 -- post a particular product - '/product/:slug'
 
@@ -34,11 +34,11 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 
 -- login as a user - '/login'
 
-# PATCH REQUEST
+### PATCH REQUEST
 
 -- update a particular product - '/product/:slug'
 
-# DELETE REQUEST
+### DELETE REQUEST
 
 -- delete a particular product - '/product/:slug'
 
