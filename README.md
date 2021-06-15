@@ -6,7 +6,7 @@ View the live project - [Click here](https://bimals-closet-api.herokuapp.com)
 
 View the frontend of this project - [Click here](https://github.com/Sproff/bimals-closet)
 
-This project will be updated on a regular basis. Feel free to make a Pull Request(PR).
+This project will be updated on a regular basis. Feel free to make a Pull Request (PR).
 
 ## Technologies used
 
@@ -21,20 +21,24 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 ## GET REQUEST
 
 -- welcome page - '/'
--- get all product - '/productS'
+
+-- get all product - '/products'
+
 -- get a particular product - '/product/:slug'
 
-## POST REQUEST
+# POST REQUEST
 
 -- post a particular product - '/product/:slug'
+
 -- create a user - '/sign-up'
+
 -- login as a user - '/login'
 
-## PATCH REQUEST
+# PATCH REQUEST
 
 -- update a particular product - '/product/:slug'
 
-## DELETE REQUEST
+# DELETE REQUEST
 
 -- delete a particular product - '/product/:slug'
 
