@@ -1,5 +1,10 @@
 const express = require('express');
 const {
+  createOrder,
+  getParticularOrder,
+  getMyOrders,
+} = require('../controllers/order.controller');
+const {
   welcomePage,
   getAllProductsList,
   getParticularProduct,
@@ -8,10 +13,15 @@ const {
   deleteProduct,
   searchProduct,
 } = require('../controllers/product.controller');
+const { isLoggedIn } = require('../middlewares/auth');
 
 const router = express.Router();
 
 router.route('/').get(welcomePage);
+
+router.post('/order', isLoggedIn, createOrder);
+router.get('/order', isLoggedIn, getMyOrders);
+router.get('/order/:id', isLoggedIn, getParticularOrder);
 
 router.route('/products').get(getAllProductsList).post(createProduct);
 
