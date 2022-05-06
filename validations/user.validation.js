@@ -4,17 +4,26 @@ const Joi = require('joi');
 const registerUserSchema = Joi.object()
   .options({ abortEarly: false })
   .keys({
-    fullname: Joi.string().min(6).max(255).required().messages({
-      'string.base': `"fullname" should be a type of text`,
-      'string.empty': `"fullname" cannot be an empty field`,
-      'string.min': `"fullname" should have a minimum of {#limit} characters`,
-      'any.required': `"fullname" is a required field`,
+    fullName: Joi.string().min(6).max(255).required().messages({
+      'string.base': `"fullName" should be a type of text`,
+      'string.empty': `"fullName" cannot be an empty field`,
+      'string.min': `"fullName" should have a minimum of {#limit} characters`,
+      'any.required': `"fullName" is a required field`,
     }),
     email: Joi.string().min(6).max(255).required().email().messages({
       'string.empty': `"email" cannot be an empty field`,
       'string.min': `"email" should have a minimum of {#limit} characters`,
       'any.required': `"email" is a required field`,
     }),
+    phoneNumber: Joi.string()
+      .length(13)
+      .pattern(/^[0-9]+$/)
+      .required()
+      .messages({
+        'string.empty': `"phoneNumber" cannot be an empty field`,
+        'string.min': `"phoneNumber" should have a minimum of {#limit} characters`,
+        'any.required': `"phoneNumber" is a required field`,
+      }),
     password: Joi.string()
       .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$'))
       .required()

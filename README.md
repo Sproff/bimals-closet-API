@@ -30,7 +30,7 @@ This project will be updated on a regular basis. Feel free to make a Pull Reques
 
 -- post a particular product - '/product/:slug'
 
--- create a user - '/sign-up'
+-- create a user - '/register'
 
 -- login as a user - '/login'
 

@@ -7,6 +7,7 @@ const createOrder = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
+      message: "Order has been created successfully",
       data: {
         order,
       },
@@ -24,6 +25,7 @@ const getParticularOrder = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
+      message: "Order has been fetched successfully",
       data: {
         order,
       },
@@ -41,6 +43,7 @@ const getMyOrders = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
+      message: "Orders has been fetched successfully",
       data: {
         order,
       },
