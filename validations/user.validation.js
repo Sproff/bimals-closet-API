@@ -31,7 +31,7 @@ const registerUserSchema = Joi.object()
         'string.base': `"password" should be a type of text`,
         'string.empty': `"password" cannot be an empty field`,
         'any.required': `"password" is a required field`,
-        'string.pattern.base': `"password" should have a minimum of eight characters, at least one capital letter and one number`,
+        'string.pattern.base': `"password" should have a minimum of eight characters, at least one capital letter, and one number`,
       }),
 
     confirm_password: Joi.ref('password'),
@@ -54,8 +54,19 @@ const loginUserSchema = Joi.object()
         'string.base': `"password" should be a type of text`,
         'string.empty': `"password" cannot be an empty field`,
         'any.required': `"password" is a required field`,
-        'string.pattern.base': `"password" should have a minimum of eight characters, at least one capital letter and one number`,
+        'string.pattern.base': `"password" should have a minimum of eight characters, at least one capital letter, and one number`,
       }),
   });
 
-module.exports = { registerUserSchema, loginUserSchema };
+const forgotPasswordSchema = Joi.object()
+  .options({ abortEarly: false })
+  .keys({
+    email: Joi.string().min(6).max(255).required().email().messages({
+      'string.base': `"email" should be a type of text`,
+      'string.empty': `"email" cannot be an empty field`,
+      'string.min': `"email" should have a minimum of {#limit} characters`,
+      'any.required': `"email" is a required field`,
+    }),
+  });
+
+module.exports = { registerUserSchema, loginUserSchema, forgotPasswordSchema };
