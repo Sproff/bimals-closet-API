@@ -12,6 +12,7 @@
     "joi": "^17.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.15",
+    "nanoid": "^4.0.2",
     "slugify": "^1.5.0"
   },
   "scripts": {
