@@ -6,8 +6,10 @@ const {
 } = require('../validations/user.validation');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+// const { nanoid } = require('nanoid');
 const { ErrorHandler } = require('../utils/errorHandler');
 const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const createUser = async (req, res, next) => {
   try {
@@ -80,10 +82,11 @@ const loginUser = async (req, res, next) => {
 const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    const { error } = await forgotPasswordSchema.validateAsync(email);
+    const { error } = await forgotPasswordSchema.validateAsync(req.body);
     if (error) throw new ErrorHandler(400, error.message);
 
-    const shortCode = nanoid(6).toUpperCase();
+    // const shortCode = nanoid(6).toUpperCase();
+    const shortCode = 'WWDASD'
 
     const user = await User.findOneAndUpdate(
       { email },
@@ -95,51 +98,65 @@ const forgotPassword = async (req, res) => {
     }
 
     // Prepare for email
-    const emailParams = {
-      Source: process.env.EMAIL_FROM,
-      Destination: {
-        ToAddresses: [email],
-      },
-      Message: {
-        Body: {
-          Html: {
-            Charset: 'UTF-8',
-            Data: `
+    const emailOptions = {
+      to: email,
+      from: process.env.EMAIL_FROM,
+      subject: 'Password Reset Request',
+      html: `
               <html>
                 <h1>Reset Password</h1>
                 <p>Use this code to reset your password:</p>
                 <h2 style="color: red;">${shortCode}</h2>
                 <i>Bimal's Closet</i>
               </html>
-            `,
-          },
-        },
-        Subject: {
-          Charset: 'UTF-8',
-          Data: 'Password Reset Request',
-        },
-      },
-    };
+            `
+    }
+    // const emailParams = {
+    //   Source: process.env.EMAIL_FROM,
+    //   Destination: {
+    //     ToAddresses: [email],
+    //   },
+    //   Message: {
+    //     Body: {
+    //       Html: {
+    //         Charset: 'UTF-8',
+    //         Data: `
+    //           <html>
+    //             <h1>Reset Password</h1>
+    //             <p>Use this code to reset your password:</p>
+    //             <h2 style="color: red;">${shortCode}</h2>
+    //             <i>Bimal's Closet</i>
+    //           </html>
+    //         `,
+    //       },
+    //     },
+    //     Subject: {
+    //       Charset: 'UTF-8',
+    //       Data: 'Password Reset Request',
+    //     },
+    //   },
+    // };
+    
 
     // await SES.sendEmail(emailParams).promise();
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-      to: email, // Change to your recipient
-      from: 'sproff.oluwaseun@gmail.com', // Change to your verified sender
-      subject: 'Sending with SendGrid is Fun',
-      text: 'and easy to do anywhere, even with Node.js',
-      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-    };
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log('Email sent');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
+    // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    // const msg = {
+    //   to: email, // Change to your recipient
+    //   from: 'sproff.oluwaseun@gmail.com', // Change to your verified sender
+    //   subject: 'Sending with SendGrid is Fun',
+    //   text: 'and easy to do anywhere, even with Node.js',
+    //   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+    // };
+    // sgMail
+    //   .send(msg)
+    //   .then(() => {
+    //     console.log('Email sent');
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+    await sendEmail(emailOptions)
     res.json({
       message:
         'A password reset email has been sent successfully. Please check your inbox for further instructions.',
@@ -151,5 +168,9 @@ const forgotPassword = async (req, res) => {
       .json({ error: 'An unexpected error occurred. Please try again later.' });
   }
 };
+
+const sendEmail = async ({ to, subject, html, from = 'sproff' }) => {
+  return await sgMail.send({ to, from, html, from, subject })
+}
 
 module.exports = { createUser, loginUser, forgotPassword };
