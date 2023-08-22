@@ -44,7 +44,7 @@ const createUser = async (req, res, next) => {
     // Save user to the DB
     user = await User.create(data);
 
-    const verificationLink = `http://localhost:3000/auth/verify-email?token=${verificationToken}&email=${data.email}`;
+    const verificationLink = `${process.env.FRONTEND_REDIRECT}/auth/verify-email?token=${verificationToken}&email=${data.email}`;
 
     // Send verification email
     const sendEmailResult = await sendEmail(data.email, '', verificationLink);
