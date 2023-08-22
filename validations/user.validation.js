@@ -69,4 +69,23 @@ const forgotPasswordSchema = Joi.object()
     }),
   });
 
-module.exports = { registerUserSchema, loginUserSchema, forgotPasswordSchema };
+const resetPasswordSchema = Joi.object()
+  .options({ abortEarly: false })
+  .keys({
+    password: Joi.string()
+      .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$'))
+      .required()
+      .messages({
+        'string.base': `"password" should be a type of text`,
+        'string.empty': `"password" cannot be an empty field`,
+        'any.required': `"password" is a required field`,
+        'string.pattern.base': `"password" should have a minimum of eight characters, at least one capital letter, and one number`,
+      }),
+  });
+
+module.exports = {
+  registerUserSchema,
+  loginUserSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+};

@@ -26,10 +26,10 @@ router.get('/order/:id', isLoggedIn, getParticularOrder);
 router.route('/products').get(getAllProductsList).post(createProduct);
 
 router.get('/products/search', searchProduct);
+router.get('/products/:slug', getParticularProduct);
 
 router
   .route('/product/:slug')
-  .get(getParticularProduct)
   .patch(updateProduct)
   .delete(deleteProduct);
 

@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema(
       required: [true, "Field can't be blank"],
     },
     image: {
-      type: String,
+      type: [String],
     },
     category: {
       type: String,
