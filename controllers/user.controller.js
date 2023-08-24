@@ -181,7 +181,7 @@ const resetPassword = async (req, res) => {
     const userId = decodedToken.sub;
 
     // Update user's password
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ _id: userId });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
