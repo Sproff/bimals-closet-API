@@ -9,9 +9,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { ErrorHandler } = require('../utils/errorHandler');
 const sgMail = require('@sendgrid/mail');
-// const { nanoid } = require('nanoid');
-const crypto = require('crypto');
-const { generateShortCode } = require('../utils/helpers');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -34,22 +31,17 @@ const createUser = async (req, res, next) => {
     // Set isVerified to false initially
     data.isVerified = false;
 
-    // Create verification token and store it
-    // const expirationTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
-    // const verificationToken = `${crypto
-    //   .randomBytes(20)
-    //   .toString('hex')}.${expirationTime}`;
-    // data.verificationToken = verificationToken;
-
-
-
     // Save user to the DB
     user = await User.create(data);
 
     // Generate token for access
-    const verificationToken = jwt.sign({ sub: user._id }, process.env.JWT_TOKEN, {
-      expiresIn: '10m',
-    });
+    const verificationToken = jwt.sign(
+      { sub: user._id },
+      process.env.JWT_TOKEN,
+      {
+        expiresIn: '10m',
+      }
+    );
 
     const verificationLink = `${process.env.FRONTEND_REDIRECT}/auth/verify-email?token=${verificationToken}&email=${data.email}`;
 
@@ -97,9 +89,6 @@ const loginUser = async (req, res, next) => {
       expiresIn: '2h',
     });
 
-    // user.token = token;
-    // user.save();
-
     res.status(200).json({
       status: 'success',
       message: 'Login successful',
@@ -115,22 +104,15 @@ const loginUser = async (req, res, next) => {
 
 const forgotPassword = async (req, res) => {
   try {
-
     // Validate email using forgotPasswordSchema
     const { error } = await forgotPasswordSchema.validateAsync(req.body);
     if (error) {
       throw new ErrorHandler(400, error.message);
     }
     const { email } = req.body;
-    // Generate a short code for password reset
-    // const shortCode = generateShortCode();
 
     // Find the user and update the password reset code
     const user = await User.findOne({ email });
-    // const user = await User.findOneAndUpdate(
-    //   { email },
-    //   { passwordResetCode: shortCode }
-    // );
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
@@ -167,7 +149,7 @@ const resetPassword = async (req, res) => {
   try {
     const { resetToken, newPassword } = req.body;
 
-    // Validate short code and new password
+    // Validate newPassword
     const { error } = await resetPasswordSchema.validateAsync({
       password: newPassword,
     });
@@ -202,19 +184,12 @@ const resetPassword = async (req, res) => {
 const verifyToken = async (req, res, next) => {
   try {
     const token = req.params.token;
-    // Split the token into the actual token and the expiration timestamp
-    // const [expirationTime] = token.split('.');
 
-    // Verify the reset token
+    // Verify the token
     const secretKey = process.env.JWT_TOKEN;
     const decodedToken = jwt.verify(token, secretKey);
 
-    // // Check if the token has expired
-    // if (Date.now() > parseInt(expirationTime)) {
-    //   throw new ErrorHandler(401, 'Verification token has expired');
-    // }
-
-    // Find the user by the token in the database
+    // Find the user by the id in the database
     const user = await User.findOne({ _id: decodedToken.sub });
 
     if (!user) {
