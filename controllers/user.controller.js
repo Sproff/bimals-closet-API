@@ -25,6 +25,9 @@ const createUser = async (req, res, next) => {
     let user = await User.findOne({ email: data.email });
     if (user) throw new ErrorHandler(400, 'Email already exists');
 
+    user = await User.findOne({ phoneNumber: data.phoneNumber });
+    if (user) throw new ErrorHandler(400, 'Phone Number already exists');
+
     const salt = await bcrypt.genSalt(8);
     data.password = await bcrypt.hash(data.password, salt);
 
