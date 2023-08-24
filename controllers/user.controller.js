@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { ErrorHandler } = require('../utils/errorHandler');
 const sgMail = require('@sendgrid/mail');
-const { nanoid } = require('nanoid');
+// const { nanoid } = require('nanoid');
 const crypto = require('crypto');
 const { generateShortCode } = require('../utils/helpers');
 
@@ -59,12 +59,14 @@ const createUser = async (req, res, next) => {
     if (!sendEmailResult) {
       throw new ErrorHandler(500, 'Failed to send email');
     }
+    const userJson = user.toJSON();
+    delete userJson.password;
 
     res.status(201).json({
       status: 'success',
       message:
         'User registered successfully. A verification email has been sent.',
-      data: user,
+      data: userJson,
     });
   } catch (error) {
     next(new ErrorHandler(error.statusCode || 500, error.message));
