@@ -35,14 +35,21 @@ const createUser = async (req, res, next) => {
     data.isVerified = false;
 
     // Create verification token and store it
-    const expirationTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
-    const verificationToken = `${crypto
-      .randomBytes(20)
-      .toString('hex')}.${expirationTime}`;
-    data.verificationToken = verificationToken;
+    // const expirationTime = Date.now() + 5 * 60 * 1000; // 5 minutes in milliseconds
+    // const verificationToken = `${crypto
+    //   .randomBytes(20)
+    //   .toString('hex')}.${expirationTime}`;
+    // data.verificationToken = verificationToken;
+
+
 
     // Save user to the DB
     user = await User.create(data);
+
+    // Generate token for access
+    const verificationToken = jwt.sign({ sub: user._id }, process.env.JWT_TOKEN, {
+      expiresIn: '10m',
+    });
 
     const verificationLink = `${process.env.FRONTEND_REDIRECT}/auth/verify-email?token=${verificationToken}&email=${data.email}`;
 
@@ -106,29 +113,29 @@ const loginUser = async (req, res, next) => {
 
 const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
 
     // Validate email using forgotPasswordSchema
     const { error } = await forgotPasswordSchema.validateAsync(req.body);
     if (error) {
       throw new ErrorHandler(400, error.message);
     }
-
+    const { email } = req.body;
     // Generate a short code for password reset
-    const shortCode = generateShortCode();
+    // const shortCode = generateShortCode();
 
     // Find the user and update the password reset code
-    const user = await User.findOneAndUpdate(
-      { email },
-      { passwordResetCode: shortCode }
-    );
+    const user = await User.findOne({ email });
+    // const user = await User.findOneAndUpdate(
+    //   { email },
+    //   { passwordResetCode: shortCode }
+    // );
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
 
     const secretKey = process.env.JWT_TOKEN;
-    const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ sub: user._id }, secretKey, { expiresIn: '1h' });
 
     const resetPasswordLink = `${process.env.FRONTEND_REDIRECT}/auth/reset-password?code=${token}`;
 
@@ -169,13 +176,13 @@ const resetPassword = async (req, res) => {
     // Verify the reset token
     const secretKey = process.env.JWT_TOKEN;
     const decodedToken = jwt.verify(resetToken, secretKey);
-    const userEmail = decodedToken.email;
+    const userId = decodedToken.sub;
 
     // Update user's password
-    const user = await User.findOne({ email: userEmail });
+    const user = await User.findOne({ id: userId });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid short code' });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     // Update user's password
@@ -194,15 +201,19 @@ const verifyToken = async (req, res, next) => {
   try {
     const token = req.params.token;
     // Split the token into the actual token and the expiration timestamp
-    const [expirationTime] = token.split('.');
+    // const [expirationTime] = token.split('.');
 
-    // Check if the token has expired
-    if (Date.now() > parseInt(expirationTime)) {
-      throw new ErrorHandler(401, 'Verification token has expired');
-    }
+    // Verify the reset token
+    const secretKey = process.env.JWT_TOKEN;
+    const decodedToken = jwt.verify(token, secretKey);
+
+    // // Check if the token has expired
+    // if (Date.now() > parseInt(expirationTime)) {
+    //   throw new ErrorHandler(401, 'Verification token has expired');
+    // }
 
     // Find the user by the token in the database
-    const user = await User.findOne({ verificationToken: token });
+    const user = await User.findOne({ _id: decodedToken.sub });
 
     if (!user) {
       throw new Error('User not found');
