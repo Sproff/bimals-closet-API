@@ -9,11 +9,16 @@ const {
   getAllProductsList,
   getParticularProduct,
   createProduct,
-  updateProduct,
-  deleteProduct,
+  // updateProduct,
+  // deleteProduct,
   searchProduct,
 } = require('../controllers/product.controller');
 const { isLoggedIn } = require('../middlewares/auth');
+const {
+  addFavorite,
+  removeFavorite,
+  getMyFavoriteProducts,
+} = require('../controllers/favorite.controller');
 
 const router = express.Router();
 
@@ -23,14 +28,19 @@ router.post('/order', isLoggedIn, createOrder);
 router.get('/order', isLoggedIn, getMyOrders);
 router.get('/order/:id', isLoggedIn, getParticularOrder);
 
-router.route('/products').get(getAllProductsList).post(createProduct);
+router.route('/products').get(getAllProductsList);
 
 router.get('/products/search', searchProduct);
 router.get('/products/:slug', getParticularProduct);
+router.post('/products', createProduct);
 
-router
-  .route('/product/:slug')
-  .patch(updateProduct)
-  .delete(deleteProduct);
+router.post('/favorite/add', addFavorite);
+router.delete('/favorite/remove', removeFavorite);
+router.get('/favorite/my-favorites', isLoggedIn, getMyFavoriteProducts);
+
+// router
+//   .route('/product/:slug')
+//   .patch(updateProduct)
+//   .delete(deleteProduct);
 
 module.exports = router;

@@ -27,6 +27,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    isFavorite: {
+      type: Boolean,
+      required: true,
+    },
   },
   { timestamps: true }
 );
