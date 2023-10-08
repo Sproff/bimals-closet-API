@@ -122,7 +122,9 @@ const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res
+        .status(404)
+        .json({ message: 'User not found. Please proceed to registration.' });
     }
 
     const secretKey = process.env.JWT_TOKEN;
@@ -173,7 +175,9 @@ const resetPassword = async (req, res) => {
     const user = await User.findOne({ _id: userId });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res
+        .status(404)
+        .json({ message: 'User not found. Please proceed to registration.' });
     }
 
     // Update user's password
