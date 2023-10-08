@@ -12,8 +12,8 @@ const { handleError } = require('./utils/errorHandler');
 const port = process.env.PORT || 9000;
 
 app.use(express.json());
-app.use('/', routeRouter);
-app.use('/user', userRoute);
+app.use('/api', routeRouter);
+app.use('/api/user', userRoute);
 app.use(handleError);
 
 async function init() {
