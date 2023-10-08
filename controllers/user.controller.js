@@ -81,11 +81,15 @@ const loginUser = async (req, res, next) => {
     if (!user)
       throw new ErrorHandler(
         400,
-        'User not found, proceed to the registration page'
+        'User not found. There is no account associated with this email. Please proceed to the registration page to create a new account.'
       );
 
     const validatePassword = await bcrypt.compare(data.password, user.password);
-    if (!validatePassword) throw new ErrorHandler(400, 'Incorrect password');
+    if (!validatePassword)
+      throw new ErrorHandler(
+        400,
+        'Invalid login credentials. Please check your email and password and try again.'
+      );
 
     // Generate token for access
     const token = jwt.sign({ sub: user._id }, process.env.JWT_TOKEN, {
